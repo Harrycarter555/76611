@@ -1,0 +1,8 @@
+{
+  "name": "ReelEarn",
+  "description": "A professional earning platform where users get paid for uploading viral reels on Instagram and Facebook.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
