@@ -1,14 +1,13 @@
-// src/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID
+  apiKey: "AIzaSy....",
+  authDomain: "reelearn-505d9.firebaseapp.com",
+  projectId: "reelearn-505d9",
+  storageBucket: "reelearn-505d9.appspot.com",
+  messagingSenderId: "207249486424",
+  appId: "1:207249486424:web:63461de258102164f8102d"
 };
 
 const app = initializeApp(firebaseConfig);
