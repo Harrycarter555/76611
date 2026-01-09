@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { User, Campaign, Submission, UserRole, UserStatus, SubmissionStatus, Platform, AppState, AppLog, PayoutRequest, PayoutStatus, BroadcastMessage, UserReport } from './types';
 import { ICONS } from './constants';
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "./src/firebase";
+import { db } from "./firebase";
 // Firestore document path
 const STATE_DOC = "main_state";
 
