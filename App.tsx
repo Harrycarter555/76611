@@ -2,7 +2,32 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { User, Campaign, Submission, UserRole, UserStatus, SubmissionStatus, Platform, AppState, AppLog, PayoutRequest, PayoutStatus, BroadcastMessage, UserReport } from './types';
 import { ICONS } from './constants';
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./firebase";
+// Firestore document path
+const STATE_DOC = "main_state";
 
+// Load full app state from Firestore
+async function loadAppStateFromFirebase(): Promise<AppState | null> {
+  try {
+    const snap = await getDoc(doc(db, "appState", STATE_DOC));
+    if (snap.exists()) {
+      return snap.data() as AppState;
+    }
+  } catch (err) {
+    console.error("Firebase load error:", err);
+  }
+  return null;
+}
+
+// Save full app state to Firestore
+async function saveAppStateToFirebase(state: AppState) {
+  try {
+    await setDoc(doc(db, "appState", STATE_DOC), state);
+  } catch (err) {
+    console.error("Firebase save error:", err);
+  }
+}
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const INITIAL_DATA: AppState = {
@@ -92,10 +117,12 @@ const Header: React.FC<{ user: User | null; onLogout: () => void; onNotifyClick:
 };
 
 const App: React.FC = () => {
-  const [appState, setAppState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('reelEarn_Management_V15');
-    return saved ? JSON.parse(saved) : INITIAL_DATA;
+const [appState, setAppState] = useState<AppState>(INITIAL_DATA);
+  useEffect(() => {
+  loadAppStateFromFirebase().then((data) => {
+    if (data) setAppState(data);
   });
+}, []);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState<'auth' | 'campaigns' | 'verify' | 'wallet' | 'admin'>('auth');
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
@@ -116,10 +143,14 @@ const App: React.FC = () => {
   const [resetData, setResetData] = useState({ username: '', password: '' });
 
   const [selectedVerifyCampaigns, setSelectedVerifyCampaigns] = useState<string[]>([]);
-
+useEffect(() => {
+  loadAppStateFromFirebase().then((data) => {
+    if (data) setAppState(data);
+  });
+}, []);
   useEffect(() => {
-    localStorage.setItem('reelEarn_Management_V15', JSON.stringify(appState));
-  }, [appState]);
+  saveAppStateToFirebase(appState);
+}, [appState]);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
