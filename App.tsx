@@ -28,7 +28,9 @@ async function saveAppStateToFirebase(state: AppState) {
     console.error("Firebase save error:", err);
   }
 }
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({
+  apiKey: import.meta.env.VITE_GEMINI_API_KEY as string
+});
 
 const INITIAL_DATA: AppState = {
   users: [
