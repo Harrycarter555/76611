@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 import { User, Campaign, Submission, UserRole, UserStatus, SubmissionStatus, Platform, AppState, AppLog, PayoutRequest, PayoutStatus, BroadcastMessage, UserReport } from './types';
 import { ICONS } from './constants';
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "./firebase.ts";
+import { db } from "./firebase";
 // Firestore document path
 const STATE_DOC = "main_state";
 
@@ -118,11 +118,7 @@ const Header: React.FC<{ user: User | null; onLogout: () => void; onNotifyClick:
 
 const App: React.FC = () => {
 const [appState, setAppState] = useState<AppState>(INITIAL_DATA);
-  useEffect(() => {
-  loadAppStateFromFirebase().then((data) => {
-    if (data) setAppState(data);
-  });
-}, []);
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState<'auth' | 'campaigns' | 'verify' | 'wallet' | 'admin'>('auth');
   const [authTab, setAuthTab] = useState<'signin' | 'signup' | 'forgot'>('signin');
@@ -148,9 +144,7 @@ useEffect(() => {
     if (data) setAppState(data);
   });
 }, []);
-  useEffect(() => {
-  saveAppStateToFirebase(appState);
-}, [appState]);
+
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
