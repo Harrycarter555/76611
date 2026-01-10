@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy....",
+  apiKey: "AIzaSyD3AGmLFFuUkIzpW0O3YyrgBbkhe98f-wg",
   authDomain: "reelearn-505d9.firebaseapp.com",
   projectId: "reelearn-505d9",
   storageBucket: "reelearn-505d9.appspot.com",
