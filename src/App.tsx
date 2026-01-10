@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { AppState, User } from "./types";
-import { INITIAL_DATA, loadAppStateFromFirebase, saveAppStateToFirebase } from "./state/appState";
-
+import { onAuthChange, logout } from "./auth/authService";
+import { getUserProfile } from "./state/userProfile";
 import Header from "./components/Header";
 import AuthView from "./auth/AuthView";
 import AdminPanel from "./admin/AdminPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-const App: React.FC = () => {
-  const [appState, setAppState] = useState<AppState>(INITIAL_DATA);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [currentView, setCurrentView] = useState<"auth" | "admin" | "campaigns" | "wallet">("auth");
+const App = () => {
+  const [firebaseUser, setFirebaseUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    loadAppStateFromFirebase().then(d => d && setAppState(d));
+    return onAuthChange(async (u) => {
+      setFirebaseUser(u);
+      if (u) {
+        const p = await getUserProfile(u.uid);
+        setProfile(p);
+      } else {
+        setProfile(null);
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    saveAppStateToFirebase(appState);
-  }, [appState]);
-
-  if (currentView === "auth") return <AuthView />;
+  if (!firebaseUser) return <AuthView />;
 
   return (
     <>
-      <Header user={currentUser} />
-      {currentView === "admin" && (
-        <AdminPanel appState={appState} setAppState={setAppState} />
-      )}
+      <Header user={firebaseUser} onLogout={logout} />
+      
+      <ProtectedRoute allow={profile?.role === "ADMIN"}>
+        <AdminPanel />
+      </ProtectedRoute>
     </>
   );
 };
